@@ -104,18 +104,50 @@ def depthFirstSearch(problem: SearchProblem):
             for coord, move, cost in problem.getSuccessors(current_node):
                 stack.push((coord, current_path + [move], total_cost + [cost]))
             visited.append(current_node)
+    return []
 
 
 def breadthFirstSearch(problem: SearchProblem):
     """Search the shallowest nodes in the search tree first."""
-    "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+
+    queue = util.Queue()
+    current_path = []
+    queue.push((problem.getStartState(), current_path))
+    visited = []
+
+    while not queue.isEmpty():
+
+        current_node, current_path = queue.pop()
+
+        if current_node not in visited:
+            if problem.isGoalState(current_node):
+                return current_path
+            for coord, move, cost in problem.getSuccessors(current_node):
+                next_path = current_path + [move]
+                queue.push((coord, next_path))
+            visited.append(current_node)
+    return []
 
 
 def uniformCostSearch(problem: SearchProblem):
-    """Search the node of least total cost first."""
-    "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    """Search the node of the least total cost first."""
+
+    priority_queue = util.PriorityQueue()
+    visited = []
+    priority_queue.push((problem.getStartState(), []), problem)
+
+    while priority_queue:
+        current_node, current_path = priority_queue.pop()
+
+        if current_node not in visited:
+            if problem.isGoalState(current_node):
+                return current_path
+            for coordinate, direction, cost in problem.getSuccessors(current_node):
+                next_path = current_path + [direction]
+                new_cost = problem.getCostOfActions(next_path)
+                priority_queue.push((coordinate, next_path), new_cost)
+            visited.append(current_node)
+    return []
 
 
 def nullHeuristic(state, problem=None):
